@@ -26,20 +26,22 @@ namespace Jarvis.Framework.Kernel.ProjectionEngine.Client
 			Changeset commit;
 			if ((commit = chunk.Payload as Changeset) != null)
 			{
+                Int32 eventPosition = 1;
                 DomainEvent evt = null;
 				foreach (var eventMessage in commit.Events.Where(m => m is DomainEvent))
 				{
-                    evt = (DomainEvent)eventMessage;
+					evt = (DomainEvent)eventMessage;
 					var headers = commit.Headers;
                     evt.CommitId = chunk.OperationId;
 					evt.CommitStamp= commit.GetTimestamp();
 					evt.Version= commit.AggregateVersion;
 					evt.Context= headers;
 					evt.CheckpointToken= chunk.Position;
+                    evt.EventPosition = eventPosition++;
 				}
 
                 evt?.SetPropertyValue(d => d.IsLastEventOfCommit, true);
-            }
+			}
 		}
 	}
 
