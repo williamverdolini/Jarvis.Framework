@@ -16,8 +16,6 @@ namespace Jarvis.Framework.Kernel.ProjectionEngine.Atomic
         where TModel : class, IAtomicReadModel
     {
         private const string ConcurrencyException = "E1100";
-
-        private readonly IMongoCollection<TModel> _collection;
         private readonly Int32 _actualVersion;
         private readonly ILiveAtomicReadModelProcessor _liveAtomicReadModelProcessor;
 
@@ -29,12 +27,12 @@ namespace Jarvis.Framework.Kernel.ProjectionEngine.Atomic
             _liveAtomicReadModelProcessor = liveAtomicReadModelProcessor;
 
             var collectionName = CollectionNames.GetCollectionName<TModel>();
-            _collection = readmodelDb.GetCollection<TModel>(collectionName);
+            Collection = readmodelDb.GetCollection<TModel>(collectionName);
 
             Logger = NullLogger.Instance;
 
             //Auto create the basic index you need
-            _collection.Indexes.CreateOne(
+            Collection.Indexes.CreateOne(
                 new CreateIndexModel<TModel>(
                     Builders<TModel>.IndexKeys
                         .Ascending(_ => _.ProjectedPosition),
@@ -46,7 +44,7 @@ namespace Jarvis.Framework.Kernel.ProjectionEngine.Atomic
                 )
              );
 
-            _collection.Indexes.CreateOne(
+            Collection.Indexes.CreateOne(
                new CreateIndexModel<TModel>(
                    Builders<TModel>.IndexKeys
                        .Ascending(_ => _.ReadModelVersion),
@@ -66,9 +64,15 @@ namespace Jarvis.Framework.Kernel.ProjectionEngine.Atomic
         /// </summary>
         public ILogger Logger { get; set; }
 
+        /// <summary>
+        /// It seems redundant, but we need to being able to treat typed instance as 
+        /// generic one through the <see cref="IAtomicCollectionReader"/> interface.
+        /// </summary>
+        public Type ReadModelType => typeof(TModel);
+
         public IQueryable<TModel> AsQueryable()
         {
-            return _collection.AsQueryable();
+            return Collection.AsQueryable();
         }
 
         public async Task<TModel> FindOneByIdAsync(String id)
@@ -79,7 +83,7 @@ namespace Jarvis.Framework.Kernel.ProjectionEngine.Atomic
             //serialization on mongodb.
             try
             {
-                rm = await _collection.FindOneByIdAsync(id).ConfigureAwait(false);
+                rm = await Collection.FindOneByIdAsync(id).ConfigureAwait(false);
             }
             catch (FormatException)
             {
@@ -109,7 +113,7 @@ namespace Jarvis.Framework.Kernel.ProjectionEngine.Atomic
 
         public async Task<IEnumerable<TModel>> FindManyAsync(System.Linq.Expressions.Expression<Func<TModel, bool>> filter, bool fixVersion = false)
         {
-            var rms = await _collection.FindAsync(filter).ConfigureAwait(false);
+            var rms = await Collection.FindAsync(filter).ConfigureAwait(false);
 
             if (!fixVersion)
             {
@@ -166,7 +170,7 @@ namespace Jarvis.Framework.Kernel.ProjectionEngine.Atomic
 
             //we need to save the object, we first try to find and replace, if the operation 
             //fails we have two distinct situation, the insert and the update
-            var existing = await _collection.Find(
+            var existing = await Collection.Find(
                     Builders<TModel>.Filter.Eq(_ => _.Id, model.Id)
                 ).Project(
                     Builders<TModel>.Projection
@@ -190,7 +194,7 @@ namespace Jarvis.Framework.Kernel.ProjectionEngine.Atomic
             //ok I'll do an upsert, the condition is different, we need to try to insert
             try
             {
-                await _collection.InsertOneAsync(model).ConfigureAwait(false);
+                await Collection.InsertOneAsync(model).ConfigureAwait(false);
                 return;
             }
             catch (MongoException mex)
@@ -231,7 +235,7 @@ namespace Jarvis.Framework.Kernel.ProjectionEngine.Atomic
                     );
             }
 
-            return _collection.FindOneAndReplaceAsync(
+            return Collection.FindOneAndReplaceAsync(
                 filter,
                 model, new FindOneAndReplaceOptions<TModel>()
                 {
@@ -239,11 +243,11 @@ namespace Jarvis.Framework.Kernel.ProjectionEngine.Atomic
                 });
         }
 
-        public IMongoCollection<TModel> Collection => _collection;
+        public IMongoCollection<TModel> Collection { get; }
 
         public IMongoQueryable AsMongoQueryable()
         {
-            return _collection.AsQueryable();
+            return Collection.AsQueryable();
         }
     }
 }

@@ -12,8 +12,16 @@ namespace Jarvis.Framework.Shared.ReadModel.Composite
     public interface ICompositeReadModel : IReadModel
     {
         /// <summary>
+        /// <para>
         /// This is the id of the readmodel, usually it is the id of a root
         /// aggregate that represent the logical base aggregate to project.
+        /// </para>
+        /// <para>
+        /// In this first version, each composite aggregate as an aggregate instance
+        /// that is the root of the readmodel. Related projection should be able
+        /// to generate an instance of composite readmodel starting from
+        /// basic atomic readmodels.
+        /// </para>
         /// </summary>
         String Id { get;  }
 

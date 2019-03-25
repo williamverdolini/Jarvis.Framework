@@ -9,13 +9,23 @@ using System.Threading.Tasks;
 namespace Jarvis.Framework.Kernel.ProjectionEngine.Atomic
 {
     /// <summary>
+    /// Marker interface, it is used to being able to resolve all 
+    /// closed type of <see cref="IAtomicCollectionReader{TModel}"/> interface
+    /// with Castle.Windsor, without resorting to stupid tricks.
+    /// </summary>
+    public interface IAtomicCollectionReader
+    {
+        Type ReadModelType { get; }
+    }
+
+    /// <summary>
     /// Simple wrapper for readmodel atomic collection. There is no need
     /// for corresponding reader, this is the only interface that will
     /// be used to access atomic readmodels, that are inherited by <see cref="AbstractAtomicReadModel{TKey}"/>
     /// </summary>
     /// <typeparam name="TModel"></typeparam>
     /// <typeparam name="TKey"></typeparam>
-    public interface IAtomicCollectionReader<TModel>
+    public interface IAtomicCollectionReader<TModel> : IAtomicCollectionReader
          where TModel : IAtomicReadModel
     {
         IQueryable<TModel> AsQueryable();

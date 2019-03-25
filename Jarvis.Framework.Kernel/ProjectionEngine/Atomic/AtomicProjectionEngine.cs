@@ -237,7 +237,7 @@ namespace Jarvis.Framework.Kernel.ProjectionEngine.Atomic
         /*
             We have two TPL chain, the first one is used for standard dispatch, the second one is
             used for all atomic readmodels that starts from 0 (new readmodel) we do not want to wait
-            for the new readmodel to catch up, so we need another poller.ù
+            for the new readmodel to catch up, so we need another poller.
        
             To keep it simple we have two tpl, one for the standard polling the other for the catchup.
         */

@@ -52,7 +52,8 @@ namespace Jarvis.Framework.Kernel.ProjectionEngine.Atomic.Support
     }
 
     /// <summary>
-    /// Factory for the consumers.
+    /// Factory for the consumers, it is used to create a typed (closed generic) changeset
+    /// consumer with a <see cref="Type"/> definition.
     /// </summary>
     public interface IAtomicReadmodelChangesetConsumerFactory
     {

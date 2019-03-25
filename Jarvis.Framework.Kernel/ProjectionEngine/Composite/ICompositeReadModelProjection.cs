@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Jarvis.Framework.Shared.ReadModel.Composite;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Jarvis.Framework.Shared.ReadModel.Composite
+namespace Jarvis.Framework.Kernel.ProjectionEngine.Composite
 {
     /// <summary>
     /// <para>
@@ -18,7 +19,7 @@ namespace Jarvis.Framework.Shared.ReadModel.Composite
     /// the composite readmodel reading many different atomic readmodels.
     /// </para>
     /// </summary>
-    public interface ICompositeReadModelProjection
+    public interface ICompositeReadModelProjection<TModel> where TModel : ICompositeReadModel
     {
         /// <summary>
         /// Given a base id it will project a <see cref="ICompositeReadModel"/> in 
@@ -28,6 +29,6 @@ namespace Jarvis.Framework.Shared.ReadModel.Composite
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        ICompositeReadModel Project(String id);
+        TModel Project(String id);
     }
 }
