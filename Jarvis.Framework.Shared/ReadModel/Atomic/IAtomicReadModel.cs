@@ -3,6 +3,17 @@ using System;
 
 namespace Jarvis.Framework.Shared.ReadModel.Atomic
 {
+    /// <summary>
+    /// <para>
+    /// Generic interface of a readmodel that is atomic. An atomic readmodel
+    /// is a readmodel that was built only with events coming from a single aggregate
+    /// </para>
+    /// <para>
+    /// It has the id of the aggregate, and it can always be reconstructed reprojection
+    /// an entire stream
+    /// </para>
+    /// <para>The readmodel is done to be resilend to multithreading projection.</para>
+    /// </summary>
     public interface IAtomicReadModel : IReadModel
     {
         /// <summary>

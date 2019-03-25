@@ -8,7 +8,7 @@ namespace Jarvis.Framework.Shared.ReadModel.Atomic
     public interface IAtomicReadModelFactory
     {
         /// <summary>
-        /// Add a factorty function to create a specific readmodel.
+        /// Add a factory function to create a specific readmodel.
         /// </summary>
         /// <param name="type"></param>
         /// <param name="function"></param>
