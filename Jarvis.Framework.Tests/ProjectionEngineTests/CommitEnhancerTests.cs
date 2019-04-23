@@ -22,8 +22,7 @@ namespace Jarvis.Framework.Tests.ProjectionEngineTests
         public void SetUp()
         {
             var cs = new InMemoryCounterService();
-            var identityManager = new IdentityManager(cs);
-            _sut = new CommitEnhancer(identityManager);
+            _sut = new CommitEnhancer();
         }
 
         [Test]

@@ -42,14 +42,14 @@ namespace Jarvis.Framework.Shared
             SingleAggregateRepositoryCacheEnabled = true;
         }
 
-        public static void EnableOfflineEventsReadmodelIdempotencyCheck()
-        {
-            OfflineEventsReadmodelIdempotencyCheck = true;
-        }
+        //public static void EnableOfflineEventsReadmodelIdempotencyCheck()
+        //{
+        //    OfflineEventsReadmodelIdempotencyCheck = true;
+        //}
 
-        public static void DisableOfflineEventsReadmodelIdempotencyCheck()
-        {
-            OfflineEventsReadmodelIdempotencyCheck = false;
-        }
+        //public static void DisableOfflineEventsReadmodelIdempotencyCheck()
+        //{
+        //    OfflineEventsReadmodelIdempotencyCheck = false;
+        //}
     }
 }
